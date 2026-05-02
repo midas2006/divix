@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Divix — Own Land For Less Than It's Worth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0c0c0c;
+      --white: #ffffff;
+      --offwhite: #f8f6f1;
+      --green: #1a5c3e;
+      --green-mid: #267a53;
+      --green-light: #e8f2ec;
+      --green-glow: rgba(26,92,62,0.12);
+      --gray: #6b7280;
+      --gray-light: #e8e6e1;
+      --gray-dark: #2d2d2d;
+      --gold: #c8a84b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--offwhite);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 56px;
+      background: rgba(248,246,241,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--black); letter-spacing: -0.02em; }
+    .logo span { color: var(--green); }
+
+    nav ul { display: flex; gap: 40px; list-style: none; align-items: center; }
+    nav ul a { text-decoration: none; color: var(--gray); font-size: 0.88rem; font-weight: 500; letter-spacing: 0.02em; transition: color 0.2s; }
+    nav ul a:hover { color: var(--black); }
+    .nav-cta { background: var(--green) !important; color: var(--white) !important; padding: 10px 24px; border-radius: 100px; font-weight: 600 !important; }
+    .nav-cta:hover { background: var(--black) !important; }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 56px 80px;
+      gap: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-left { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--green); margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+    }
+    .hero-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--green); }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 5.5vw, 5.8rem);
+      line-height: 1.02; letter-spacing: -0.03em; color: var(--black); margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+    h1 em { font-style: italic; color: var(--green); }
+
+    .hero-sub {
+      font-size: 1.05rem; color: var(--gray); line-height: 1.75; max-width: 480px; margin-bottom: 48px;
+      opacity: 0; animation: fadeUp 0.7s ease 0.35s forwards;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; align-items: center;
+      opacity: 0; animation: fadeUp 0.7s ease 0.5s forwards;
+    }
+
+    .btn-primary {
+      background: var(--green); color: var(--white); border: none;
+      padding: 16px 36px; border-radius: 100px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; font-family: 'Manrope', sans-serif; transition: all 0.25s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { background: var(--black); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.15); }
+
+    .btn-ghost {
+      color: var(--gray-dark); font-size: 0.9rem; font-weight: 600;
+      display: flex; align-items: center; gap: 8px; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-ghost::after { content: '→'; transition: transform 0.2s; }
+    .btn-ghost:hover { color: var(--green); }
+    .btn-ghost:hover::after { transform: translateX(4px); }
+
+    .hero-right { position: relative; z-index: 1; opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards; }
+
+    .hero-card {
+      background: var(--white); border-radius: 20px; padding: 28px;
+      border: 1px solid var(--gray-light); box-shadow: 0 24px 64px rgba(0,0,0,0.08); margin-bottom: 16px;
+    }
+
+    .hero-card-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray); margin-bottom: 4px; }
+    .hero-card-location { font-size: 1rem; font-weight: 700; color: var(--black); margin-bottom: 20px; }
+
+    .hero-card-values { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .val-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray); margin-bottom: 6px; }
+    .val-num { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--black); }
+    .val-num.green { color: var(--green); }
+    .val-num.gold { color: var(--gold); }
+
+    .hero-card-bar { height: 6px; background: var(--gray-light); border-radius: 100px; overflow: hidden; margin-bottom: 10px; }
+    .hero-card-bar-fill { height: 100%; width: 73%; background: linear-gradient(90deg, var(--green-mid), var(--green)); border-radius: 100px; }
+    .hero-card-bar-label { font-size: 0.73rem; color: var(--gray); font-weight: 500; }
+
+    .instant-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--green-light); color: var(--green);
+      font-size: 0.72rem; font-weight: 700; padding: 6px 12px; border-radius: 100px; margin-top: 16px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .instant-badge::before { content: '↑'; font-size: 0.85rem; }
+
+    .mini-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mini-card { background: var(--white); border-radius: 14px; padding: 18px; border: 1px solid var(--gray-light); }
+    .mini-card-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--black); display: block; margin-bottom: 4px; }
+    .mini-card-num span { color: var(--green); }
+    .mini-card-label { font-size: 0.72rem; color: var(--gray); font-weight: 500; }
+
+    .ticker { background: var(--black); padding: 14px 0; overflow: hidden; white-space: nowrap; }
+    .ticker-inner { display: inline-flex; gap: 48px; animation: ticker 25s linear infinite; }
+    .ticker-item { font-size: 0.78rem; font-weight: 600; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 12px; }
+    .ticker-item span { color: var(--green-mid); }
+    .ticker-dot { width: 4px; height: 4px; background: var(--green-mid); border-radius: 50%; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .section { padding: 110px 56px; }
+
+    .section-tag {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--green); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--green); }
+
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; margin-bottom: 16px; max-width: 600px; }
+    .section-sub { color: var(--gray); font-size: 1rem; line-height: 1.7; max-width: 520px; margin-bottom: 72px; }
+
+    .mechanics { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--gray-light); border-radius: 24px; overflow: hidden; }
+    .mechanic { background: var(--offwhite); padding: 48px 44px; transition: background 0.3s; }
+    .mechanic:hover { background: var(--white); }
+    .mechanic-num { font-family: 'Playfair Display', serif; font-size: 4rem; color: var(--gray-light); line-height: 1; margin-bottom: 24px; display: block; }
+    .mechanic-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; color: var(--black); }
+    .mechanic-text { font-size: 0.9rem; color: var(--gray); line-height: 1.7; }
+    .mechanic-tag { display: inline-block; background: var(--green-light); color: var(--green); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 16px; }
+
+    .math-section { background: var(--black); padding: 110px 56px; position: relative; overflow: hidden; }
+    .math-section::before { content: ''; position: absolute; top: -300px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(26,92,62,0.2) 0%, transparent 65%); pointer-events: none; }
+    .math-section .section-tag { color: var(--green-mid); }
+    .math-section .section-tag::before { background: var(--green-mid); }
+    .math-section .section-title { color: var(--white); max-width: 100%; }
+    .math-section .section-sub { color: #6b7280; margin-bottom: 64px; }
+
+    .math-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+
+    .math-example { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 40px; }
+    .math-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .math-row:last-child { border-bottom: none; }
+    .math-label { font-size: 0.85rem; color: #6b7280; font-weight: 500; }
+    .math-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--white); font-weight: 700; }
+    .math-value.green { color: var(--green-mid); }
+    .math-value.gold { color: var(--gold); }
+
+    .math-result { background: var(--green); border-radius: 14px; padding: 24px; margin-top: 24px; text-align: center; }
+    .math-result-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.7); margin-bottom: 8px; }
+    .math-result-num { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--white); font-weight: 700; }
+    .math-result-sub { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+    .math-points { display: flex; flex-direction: column; gap: 28px; }
+    .math-point { display: flex; gap: 20px; align-items: flex-start; }
+    .math-point-icon { width: 44px; height: 44px; background: rgba(26,92,62,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .math-point-title { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+    .math-point-text { font-size: 0.88rem; color: #6b7280; line-height: 1.65; }
+
+    .benefits { padding: 110px 56px; background: var(--white); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--gray-light); border-radius: 24px; overflow: hidden; margin-top: 64px; }
+    .benefit { background: var(--white); padding: 44px 36px; transition: background 0.3s; }
+    .benefit:hover { background: var(--offwhite); }
+    .benefit-icon { font-size: 2rem; margin-bottom: 20px; display: block; }
+    .benefit-who { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); margin-bottom: 8px; }
+    .benefit-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 14px; color: var(--black); }
+    .benefit-text { font-size: 0.88rem; color: var(--gray); line-height: 1.7; }
+
+    .spv-section { padding: 110px 56px; background: var(--offwhite); }
+    .spv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .spv-flow { display: flex; flex-direction: column; gap: 0; }
+    .spv-step { display: flex; gap: 20px; align-items: flex-start; position: relative; }
+    .spv-step:not(:last-child)::after { content: ''; position: absolute; left: 19px; top: 44px; width: 2px; height: calc(100% + 8px); background: var(--gray-light); }
+    .spv-step-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--green-light); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--green); flex-shrink: 0; position: relative; z-index: 1; }
+    .spv-step-content { padding-bottom: 36px; }
+    .spv-step-title { font-size: 1rem; font-weight: 700; color: var(--black); margin-bottom: 6px; }
+    .spv-step-text { font-size: 0.88rem; color: var(--gray); line-height: 1.65; }
+
+    .waitlist { background: var(--green); padding: 120px 56px; text-align: center; position: relative; overflow: hidden; }
+    .waitlist::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .waitlist-content { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; }
+    .waitlist h2 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 4vw, 3.6rem); color: var(--white); line-height: 1.08; letter-spacing: -0.025em; margin-bottom: 16px; }
+    .waitlist h2 em { font-style: italic; }
+    .waitlist p { color: rgba(255,255,255,0.75); font-size: 1rem; margin-bottom: 48px; line-height: 1.65; }
+
+    .waitlist-form { display: flex; gap: 12px; max-width: 480px; margin: 0 auto; }
+    .waitlist-form input { flex: 1; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: var(--white); padding: 16px 22px; border-radius: 100px; font-size: 0.95rem; font-family: 'Manrope', sans-serif; outline: none; transition: border-color 0.2s; }
+    .waitlist-form input::placeholder { color: rgba(255,255,255,0.45); }
+    .waitlist-form input:focus { border-color: rgba(255,255,255,0.5); }
+    .waitlist-form button { background: var(--white); color: var(--green); border: none; padding: 16px 30px; border-radius: 100px; font-size: 0.92rem; font-weight: 700; cursor: pointer; font-family: 'Manrope', sans-serif; white-space: nowrap; transition: all 0.25s; }
+    .waitlist-form button:hover { background: var(--black); color: var(--white); }
+    .waitlist-note { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 20px; }
+    .success-msg { color: rgba(255,255,255,0.9); font-size: 1rem; font-weight: 600; margin-top: 16px; padding: 16px 24px; background: rgba(255,255,255,0.12); border-radius: 100px; display: none; }
+
+    footer { padding: 44px 56px; border-top: 1px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: var(--offwhite); }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--black); }
+    .footer-logo span { color: var(--green); }
+    .footer-text { font-size: 0.8rem; color: var(--gray); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      nav ul { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 40px; }
+      .section { padding: 72px 24px; }
+      .mechanics { grid-template-columns: 1fr; }
+      .math-section { padding: 72px 24px; }
+      .math-grid { grid-template-columns: 1fr; }
+      .benefits { padding: 72px 24px; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .spv-section { padding: 72px 24px; }
+      .spv-grid { grid-template-columns: 1fr; gap: 48px; }
+      .waitlist { padding: 80px 24px; }
+      .waitlist-form { flex-direction: column; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Divi<span>x</span></div>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#math">The math</a></li>
+      <li><a href="#spv">Ownership</a></li>
+      <li><a href="#waitlist" class="nav-cta">Get early access</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Early access now open</div>
+      <h1>Own land.<br>For <em>less</em> than<br>it's worth.</h1>
+      <p class="hero-sub">Divix sources distressed bank collateral land at below market value and lets anyone invest in fractions starting at $25. You're in profit the moment you buy.</p>
+      <div class="hero-actions">
+        <a href="#waitlist" class="btn-primary">Join the waitlist</a>
+        <a href="#math" class="btn-ghost">See the math</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <div class="hero-card-label">Featured listing · Austin, Texas</div>
+        <div class="hero-card-location">Riverside Commercial Plot</div>
+        <div class="hero-card-values">
+          <div>
+            <div class="val-label">Market value</div>
+            <div class="val-num">$48,000</div>
+          </div>
+          <div>
+            <div class="val-label">Divix price</div>
+            <div class="val-num green">$34,000</div>
+          </div>
+          <div>
+            <div class="val-label">Min. fraction</div>
+            <div class="val-num gold">$25</div>
+          </div>
+        </div>
+        <div class="hero-card-bar"><div class="hero-card-bar-fill"></div></div>
+        <div class="hero-card-bar-label">73% funded · $24,820 raised of $34,000</div>
+        <div class="instant-badge">29% instant paper profit on every fraction</div>
+      </div>
+      <div class="mini-cards">
+        <div class="mini-card"><span class="mini-card-num">$<span>25</span></span><div class="mini-card-label">Minimum investment</div></div>
+        <div class="mini-card"><span class="mini-card-num"><span>15–40</span>%</span><div class="mini-card-label">Below market value</div></div>
+        <div class="mini-card"><span class="mini-card-num"><span>Day</span> 1</span><div class="mini-card-label">Instant paper profit</div></div>
+        <div class="mini-card"><span class="mini-card-num"><span>100</span>%</span><div class="mini-card-label">Real legal ownership</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <div class="ticker-item"><div class="ticker-dot"></div>Banks sell distressed land at recovery price, not market value <span>· Structurally guaranteed discount</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Every fraction is legally recorded ownership <span>· SPV protected</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Start investing from $25 <span>· No accreditation required</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Secondary marketplace for selling fractions <span>· Built-in liquidity</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Banks sell distressed land at recovery price, not market value <span>· Structurally guaranteed discount</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Every fraction is legally recorded ownership <span>· SPV protected</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Start investing from $25 <span>· No accreditation required</span></div>
+      <div class="ticker-item"><div class="ticker-dot"></div>Secondary marketplace for selling fractions <span>· Built-in liquidity</span></div>
+    </div>
+  </div>
+
+  <section class="section" id="how">
+    <div class="section-tag">How it works</div>
+    <h2 class="section-title">A broken system creates a perfect opportunity.</h2>
+    <p class="section-sub">When borrowers default, banks take their land but are legally pressured to sell it fast at recovery price, not market value. That gap is where Divix lives.</p>
+    <div class="mechanics">
+      <div class="mechanic">
+        <span class="mechanic-num">01</span>
+        <div class="mechanic-title">Bank seizes distressed land</div>
+        <p class="mechanic-text">When a borrower defaults on a loan secured by land, the bank forecloses and takes ownership. The land becomes REO, Real Estate Owned, and the bank is legally required to dispose of it as quickly as possible.</p>
+        <span class="mechanic-tag">Regulated by US law</span>
+      </div>
+      <div class="mechanic">
+        <span class="mechanic-num">02</span>
+        <div class="mechanic-title">Bank sells at recovery price</div>
+        <p class="mechanic-text">Banks don't want land. They want their loan amount back. So they sell at whatever price recovers their outstanding loan, not the actual market value. This creates a structurally guaranteed discount on every single distressed property.</p>
+        <span class="mechanic-tag">Always below market value</span>
+      </div>
+      <div class="mechanic">
+        <span class="mechanic-num">03</span>
+        <div class="mechanic-title">Divix packages it into fractions</div>
+        <p class="mechanic-text">Divix acquires or partners on the distressed property, places it inside a Special Purpose Vehicle, and divides it into fractions starting at $25. Each fraction is priced at the bank's recovery price, which is always below what the land is actually worth.</p>
+        <span class="mechanic-tag">SPV legal structure</span>
+      </div>
+      <div class="mechanic">
+        <span class="mechanic-num">04</span>
+        <div class="mechanic-title">You invest. You're instantly in profit.</div>
+        <p class="mechanic-text">You buy a fraction starting at $25. Because the total price of all fractions equals the bank's recovery price, which is below market value, your fraction is already worth more than you paid the moment the transaction completes.</p>
+        <span class="mechanic-tag">Profit from day one</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="math-section" id="math">
+    <div class="section-tag">The math</div>
+    <h2 class="section-title" style="color:white;">This is what instant profit actually looks like.</h2>
+    <p class="section-sub">Real numbers. No projections. No waiting for the market to move.</p>
+    <div class="math-grid">
+      <div class="math-example">
+        <div class="math-row"><span class="math-label">Land market value</span><span class="math-value">$100,000</span></div>
+        <div class="math-row"><span class="math-label">Bank recovery price</span><span class="math-value green">$70,000</span></div>
+        <div class="math-row"><span class="math-label">Total fractions available</span><span class="math-value">2,800</span></div>
+        <div class="math-row"><span class="math-label">Price per fraction</span><span class="math-value gold">$25</span></div>
+        <div class="math-row"><span class="math-label">Real value per fraction</span><span class="math-value green">$35.71</span></div>
+        <div class="math-result">
+          <div class="math-result-label">Your instant paper profit per fraction</div>
+          <div class="math-result-num">+$10.71</div>
+          <div class="math-result-sub">42.8% gain before the land appreciates a single dollar</div>
+        </div>
+      </div>
+      <div class="math-points">
+        <div class="math-point">
+          <div class="math-point-icon">📉</div>
+          <div>
+            <div class="math-point-title">The discount is structural, not negotiated</div>
+            <p class="math-point-text">Banks are legally pressured to recover their loan amount fast. That pressure creates a guaranteed gap between recovery price and market value on every REO property. Not sometimes. Every time.</p>
+          </div>
+        </div>
+        <div class="math-point">
+          <div class="math-point-icon">📈</div>
+          <div>
+            <div class="math-point-title">Land only appreciates over time</div>
+            <p class="math-point-text">Unlike stocks or crypto, land is finite. It doesn't get disrupted or deprecated. As the land grows in value over time, your fraction grows with it. The instant profit is just the beginning.</p>
+          </div>
+        </div>
+        <div class="math-point">
+          <div class="math-point-icon">🔄</div>
+          <div>
+            <div class="math-point-title">Sell on the secondary marketplace anytime</div>
+            <p class="math-point-text">After a minimum holding period, list your fraction on the Divix marketplace. Other investors buy it at current market value. Divix takes a small fee. You keep the profit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="benefits" id="benefits">
+    <div class="section-tag">Who benefits</div>
+    <h2 class="section-title">Everyone in the system wins.</h2>
+    <p class="section-sub">Divix doesn't create value by taking it from someone else. It creates value by connecting motivated sellers with investors who previously had no access.</p>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <span class="benefit-icon">🏦</span>
+        <div class="benefit-who">Banks</div>
+        <div class="benefit-title">Recover capital faster</div>
+        <p class="benefit-text">Banks are legally required to dispose of REO properties quickly. Divix creates a liquid, efficient channel to offload distressed land fast without months of sitting on dead assets that hurt their balance sheet.</p>
+      </div>
+      <div class="benefit">
+        <span class="benefit-icon">🌍</span>
+        <div class="benefit-who">Investors</div>
+        <div class="benefit-title">Own real land from $25</div>
+        <p class="benefit-text">Anyone in the world can now own a legally recorded fraction of real appreciating land at below market value. No mortgage. No agent. No minimum wealth requirement. Just $25 and an internet connection.</p>
+      </div>
+      <div class="benefit">
+        <span class="benefit-icon">⚙️</span>
+        <div class="benefit-who">Divix</div>
+        <div class="benefit-title">Fee on every transaction</div>
+        <p class="benefit-text">Divix earns a 5% fee on every initial fraction purchase and 2 to 3% on every secondary market resale. Every property listed and every fraction traded generates revenue automatically with no marginal cost.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="spv-section" id="spv">
+    <div class="spv-grid">
+      <div>
+        <div class="section-tag">Legal ownership</div>
+        <h2 class="section-title">Your ownership is real, legally recorded, and protected.</h2>
+        <p class="section-sub" style="margin-bottom:0;">Every property on Divix is held inside a Special Purpose Vehicle, a dedicated legal entity created solely to hold that one piece of land. Your fraction is a legally documented share in that entity. If Divix ever ceased to exist, your ownership remains intact.</p>
+      </div>
+      <div class="spv-flow">
+        <div class="spv-step">
+          <div class="spv-step-dot">1</div>
+          <div class="spv-step-content">
+            <div class="spv-step-title">Property is identified and verified</div>
+            <p class="spv-step-text">Divix sources distressed REO land from bank databases, verifies title history, tax records, and confirms the discount between recovery price and market value.</p>
+          </div>
+        </div>
+        <div class="spv-step">
+          <div class="spv-step-dot">2</div>
+          <div class="spv-step-content">
+            <div class="spv-step-title">SPV is created for this property</div>
+            <p class="spv-step-text">A dedicated Special Purpose Vehicle, a legal LLC, is formed specifically to hold this one property. It owns nothing else. This protects investors from any other Divix liabilities.</p>
+          </div>
+        </div>
+        <div class="spv-step">
+          <div class="spv-step-dot">3</div>
+          <div class="spv-step-content">
+            <div class="spv-step-title">Fractions go on sale from $25</div>
+            <p class="spv-step-text">The SPV divides into fractions listed on the Divix platform. Investors purchase fractions and become legally recorded shareholders of the SPV, which owns the land.</p>
+          </div>
+        </div>
+        <div class="spv-step">
+          <div class="spv-step-dot">4</div>
+          <div class="spv-step-content">
+            <div class="spv-step-title">Property funds, ownership locks in</div>
+            <p class="spv-step-text">Once all fractions are sold, ownership is legally recorded for every investor. Funds held in escrow are only released to acquire the property once fully funded.</p>
+          </div>
+        </div>
+        <div class="spv-step">
+          <div class="spv-step-dot">5</div>
+          <div class="spv-step-content">
+            <div class="spv-step-title">Hold, grow, or sell on marketplace</div>
+            <p class="spv-step-text">Track your portfolio value as the land appreciates. After the minimum holding period, sell your fraction to other investors on the Divix secondary marketplace at current market value.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="waitlist" id="waitlist">
+    <div class="waitlist-content">
+      <h2>Be first to invest<br>when we <em>go live.</em></h2>
+      <p>We're onboarding our founding investors before public launch. Join the waitlist and get priority access to our first property listings.</p>
+      <form id="waitlistForm" action="https://formspree.io/f/xrejbarq" method="POST">
+        <div class="waitlist-form">
+          <input type="email" name="email" id="emailInput" placeholder="Your email address" required/>
+          <button type="submit" id="submitBtn">Join waitlist</button>
+        </div>
+      </form>
+      <div class="success-msg" id="successMsg">✓ You're on the list. We'll reach out before we go live.</div>
+      <p class="waitlist-note">No spam. No commitments. Priority access only.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">Divi<span>x</span></div>
+    <div class="footer-text">© 2026 Divix. Fractional land investment for everyone.</div>
+    <div class="footer-text">divixapp.com</div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('waitlistForm');
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const input = document.getElementById('emailInput');
+      const msg = document.getElementById('successMsg');
+      const btn = document.getElementById('submitBtn');
+      const formWrapper = document.querySelector('.waitlist-form');
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+      try {
+        const response = await fetch('https://formspree.io/f/xrejbarq', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ email: input.value })
+        });
+        if (response.ok) {
+          formWrapper.style.display = 'none';
+          msg.style.display = 'block';
+        } else {
+          btn.textContent = 'Try again';
+          btn.disabled = false;
+        }
+      } catch(err) {
+        formWrapper.style.display = 'none';
+        msg.style.display = 'block';
+      }
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.mechanic, .benefit, .math-point, .spv-step').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
